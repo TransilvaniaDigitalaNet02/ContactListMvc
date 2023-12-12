@@ -7,21 +7,27 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ContactListMvc.Data;
 using ContactListMvc.Models;
+using ContactListMvc.Services;
 
 namespace ContactListMvc.Controllers
 {
     public class ContactListEntriesController : Controller
     {
         private readonly DatabaseContext _context;
+        private readonly IConsolePrinter _printer;
 
-        public ContactListEntriesController(DatabaseContext context)
+        public ContactListEntriesController(
+            DatabaseContext context, IConsolePrinter printer)
         {
             _context = context;
+            _printer = printer;
         }
 
         // GET: ContactListEntries
         public async Task<IActionResult> Index()
         {
+            _printer.Print("Ma pregatesc sa generez lista de contacte");
+
             return _context.ContactListEntry != null ?
                         View(await _context.ContactListEntry.ToListAsync()) :
                         Problem("Entity set 'DatabaseContext.ContactListEntry'  is null.");
@@ -48,6 +54,9 @@ namespace ContactListMvc.Controllers
         // GET: ContactListEntries/Create
         public IActionResult Create()
         {
+            // ViewData["CompanyName"] = "SC Test ABC SRL";
+            ViewBag.CompanyName = "SC Test ABC123 SRL";
+
             return View();
         }
 

@@ -54,6 +54,10 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
+<div>
+    <span>@ViewBag.CompanyName</span>
+</div>
+
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
