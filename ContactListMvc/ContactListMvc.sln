@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34031.279
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContactListMvc", "ContactListMvc.csproj", "{EF262212-AF3E-45B0-9E88-D545302F6D13}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ContactListMvc.Web", "ContactListMvc.Web.csproj", "{EF262212-AF3E-45B0-9E88-D545302F6D13}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContactListMvc.Business", "..\ContactListMvc.Business\ContactListMvc.Business.csproj", "{678D7CF0-5359-40B2-8EBE-79674DDB17D3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContactListMvc.Infrastructure", "..\ContactListMvc.Infrastructure\ContactListMvc.Infrastructure.csproj", "{F6B54141-3E5F-4B58-8D24-0AD062A4FF8F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{EF262212-AF3E-45B0-9E88-D545302F6D13}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EF262212-AF3E-45B0-9E88-D545302F6D13}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EF262212-AF3E-45B0-9E88-D545302F6D13}.Release|Any CPU.Build.0 = Release|Any CPU
+		{678D7CF0-5359-40B2-8EBE-79674DDB17D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{678D7CF0-5359-40B2-8EBE-79674DDB17D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{678D7CF0-5359-40B2-8EBE-79674DDB17D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{678D7CF0-5359-40B2-8EBE-79674DDB17D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6B54141-3E5F-4B58-8D24-0AD062A4FF8F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6B54141-3E5F-4B58-8D24-0AD062A4FF8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6B54141-3E5F-4B58-8D24-0AD062A4FF8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6B54141-3E5F-4B58-8D24-0AD062A4FF8F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

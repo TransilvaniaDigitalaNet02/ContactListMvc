@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace ContactListMvc.Migrations
+namespace ContactListMvc.Infrastructure.Data
 {
     /// <inheritdoc />
     public partial class InitialDatabaseSetup : Migration
