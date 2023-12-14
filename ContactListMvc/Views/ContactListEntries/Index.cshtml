@@ -1,12 +1,8 @@
-﻿@using ContactListMvc.Services;
-
-@model IEnumerable<ContactListMvc.Models.ContactListEntry>
-@inject IConsolePrinter _printer;
+﻿@model IEnumerable<ContactListMvc.Models.ContactListEntryViewModel>
 
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    _printer.Print("Generez lista contacte: " + Model.Count());
 }
 
 <h1>Index</h1>

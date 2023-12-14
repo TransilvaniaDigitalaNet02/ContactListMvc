@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Net.Mime;
 
-namespace ContactListMvc.Controllers
+namespace ContactListMvc.Web.Controllers
 {
     public class HomeController : Controller
     {

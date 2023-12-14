@@ -1,4 +1,4 @@
-﻿namespace ContactListMvc.Models
+﻿namespace ContactListMvc.Business.Models
 {
     public enum ContactType
     {
