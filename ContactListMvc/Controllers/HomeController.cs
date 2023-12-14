@@ -1,18 +1,33 @@
 ﻿using ContactListMvc.Models;
+using ContactListMvc.Web.Settings;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using System.Configuration;
 using System.Diagnostics;
 using System.Net.Mime;
+using System.Text;
 
 namespace ContactListMvc.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly CompanySettings _companySettings;
+        private readonly CompanySettings _companySettingsSnapshot;
+        private readonly IConfiguration _configuration;
+
         private int _value = 0;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(
+            ILogger<HomeController> logger, 
+            IOptions<CompanySettings> options,
+            IOptionsSnapshot<CompanySettings> optionsSnapshot,
+            IConfiguration configuration)
         {
             _logger = logger;
+            _companySettings = options.Value;
+            _companySettingsSnapshot = optionsSnapshot.Value;
+            _configuration = configuration;
         }
 
         public IActionResult Index()
@@ -28,6 +43,19 @@ namespace ContactListMvc.Controllers
 
             // le pun pe view
             return View();
+        }
+
+        public IActionResult CompanyInfo()
+        {
+            CompanySettings? dynamicReadSettings = _configuration.GetSection("Company")
+                                                                 .Get<CompanySettings>();
+
+            StringBuilder sbOutput = new StringBuilder();
+            sbOutput.AppendLine($"[with options pattern] Company name= {_companySettings.Name}");
+            sbOutput.AppendLine($"[with options snapshot] Company name= {_companySettingsSnapshot.Name}");
+            sbOutput.AppendLine($"[with configration root] Company name= {dynamicReadSettings?.Name}");
+
+            return Content(sbOutput.ToString(), MediaTypeNames.Text.Plain);
         }
 
         public IActionResult Increment()

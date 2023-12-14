@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using ContactListMvc.Infrastructure;
 using ContactListMvc.Business;
+using ContactListMvc.Web.Settings;
 
 namespace ContactListMvc
 {
@@ -15,6 +16,7 @@ namespace ContactListMvc
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddBusinessLogic();
+            builder.Services.Configure<CompanySettings>(builder.Configuration.GetSection("Company"));
 
             string connectionString = builder.Configuration.GetConnectionString("DatabaseContext")
                 ?? throw new InvalidOperationException("Connection string 'DatabaseContext' not found.");

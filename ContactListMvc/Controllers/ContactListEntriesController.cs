@@ -3,6 +3,7 @@ using ContactListMvc.Models;
 using ContactListMvc.Business.Abstractions.Services;
 using ContactListMvc.Business.Models;
 using ContactListMvc.Business.Exceptions;
+using ContactListMvc.Web.Filters;
 
 namespace ContactListMvc.Controllers
 {
@@ -17,6 +18,7 @@ namespace ContactListMvc.Controllers
         }
 
         // GET: ContactListEntries
+        [MeasureExecutionActionFilter]
         public async Task<IActionResult> Index()
         {
             IReadOnlyList<ContactListEntry> contactList = await _service.GetAllContactsAsync();
