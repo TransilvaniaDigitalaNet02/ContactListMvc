@@ -1,23 +1,25 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using ContactListMvc.Data;
-using ContactListMvc.Services;
+using ContactListMvc.Infrastructure;
+using ContactListMvc.Business;
 
 namespace ContactListMvc
 {
     public class Program
     {
+        // For a brief description of a clean-architecture app structure
+        // see: https://learn.microsoft.com/en-us/dotnet/architecture/modern-web-apps-azure/common-web-application-architectures#clean-architecture
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            builder.Services.AddDbContext<DatabaseContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DatabaseContext") ?? throw new InvalidOperationException("Connection string 'DatabaseContext' not found.")));
-
-            builder.Services.AddScoped<IConsolePrinter, ConsolePrinter>();
-
             builder.Services.AddControllersWithViews();
+            builder.Services.AddBusinessLogic();
+
+            string connectionString = builder.Configuration.GetConnectionString("DatabaseContext")
+                ?? throw new InvalidOperationException("Connection string 'DatabaseContext' not found.");
+
+            builder.Services.AddInfrastructre(connectionString);
 
             WebApplication app = builder.Build();
 
