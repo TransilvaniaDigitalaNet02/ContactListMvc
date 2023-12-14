@@ -1,54 +1,48 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using ContactListMvc.Data;
+﻿using Microsoft.AspNetCore.Mvc;
 using ContactListMvc.Models;
-using ContactListMvc.Services;
+using ContactListMvc.Business.Abstractions.Services;
+using ContactListMvc.Business.Models;
+using ContactListMvc.Business.Exceptions;
 
 namespace ContactListMvc.Controllers
 {
     public class ContactListEntriesController : Controller
     {
-        private readonly DatabaseContext _context;
-        private readonly IConsolePrinter _printer;
+        private readonly IContactListService _service;
 
         public ContactListEntriesController(
-            DatabaseContext context, IConsolePrinter printer)
+            IContactListService service)
         {
-            _context = context;
-            _printer = printer;
+            _service = service;
         }
 
         // GET: ContactListEntries
         public async Task<IActionResult> Index()
         {
-            _printer.Print("Ma pregatesc sa generez lista de contacte");
+            IReadOnlyList<ContactListEntry> contactList = await _service.GetAllContactsAsync();
 
-            return _context.ContactListEntry != null ?
-                        View(await _context.ContactListEntry.ToListAsync()) :
-                        Problem("Entity set 'DatabaseContext.ContactListEntry'  is null.");
+            IReadOnlyList<ContactListEntryViewModel> viewModels = contactList.Select(c => MapToViewModel(c)).ToList();
+
+            return View(viewModels);
         }
 
         // GET: ContactListEntries/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.ContactListEntry == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var contactListEntry = await _context.ContactListEntry
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (contactListEntry == null)
+            ContactListEntry? model = await _service.GetByIdAsync(id.Value);
+            if (model is null)
             {
                 return NotFound();
             }
 
-            return View(contactListEntry);
+            ContactListEntryViewModel viewModel = MapToViewModel(model);
+
+            return View(viewModel);
         }
 
         // GET: ContactListEntries/Create
@@ -65,31 +59,36 @@ namespace ContactListMvc.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,ContactType,Name,DateOfBirth,Address,PhoneNumber,Email")] ContactListEntry contactListEntry)
+        public async Task<IActionResult> Create([Bind("Id,ContactType,Name,DateOfBirth,Address,PhoneNumber,Email")] ContactListEntryViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(contactListEntry);
-                await _context.SaveChangesAsync();
+                ContactListEntry model = MapToBusinessModel(viewModel);
+                await _service.CreateEntryAsync(model);
+
                 return RedirectToAction(nameof(Index));
             }
-            return View(contactListEntry);
+
+            return View(viewModel);
         }
 
         // GET: ContactListEntries/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.ContactListEntry == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var contactListEntry = await _context.ContactListEntry.FindAsync(id);
-            if (contactListEntry == null)
+            ContactListEntry? model = await _service.GetByIdAsync(id.Value);
+            if (model is null)
             {
                 return NotFound();
             }
-            return View(contactListEntry);
+
+            ContactListEntryViewModel viewModel = MapToViewModel(model);
+
+            return View(viewModel);
         }
 
         // POST: ContactListEntries/Edit/5
@@ -97,9 +96,9 @@ namespace ContactListMvc.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,ContactType,Name,DateOfBirth,Address,PhoneNumber,Email")] ContactListEntry contactListEntry)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,ContactType,Name,DateOfBirth,Address,PhoneNumber,Email")] ContactListEntryViewModel viewModel)
         {
-            if (id != contactListEntry.Id)
+            if (id != viewModel.Id)
             {
                 return NotFound();
             }
@@ -108,12 +107,13 @@ namespace ContactListMvc.Controllers
             {
                 try
                 {
-                    _context.Update(contactListEntry);
-                    await _context.SaveChangesAsync();
+                    ContactListEntry model = MapToBusinessModel(viewModel);
+
+                    await _service.UpdateEntryAsync(id, model);
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (ContactListUpdateConflictException e)
                 {
-                    if (!ContactListEntryExists(contactListEntry.Id))
+                    if (e.EntryDeletedInTheMeanwhile)
                     {
                         return NotFound();
                     }
@@ -122,27 +122,30 @@ namespace ContactListMvc.Controllers
                         throw;
                     }
                 }
+
                 return RedirectToAction(nameof(Index));
             }
-            return View(contactListEntry);
+
+            return View(viewModel);
         }
 
         // GET: ContactListEntries/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.ContactListEntry == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var contactListEntry = await _context.ContactListEntry
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (contactListEntry == null)
+            ContactListEntry? model = await _service.GetByIdAsync(id.Value);
+            if (model is null)
             {
                 return NotFound();
             }
 
-            return View(contactListEntry);
+            ContactListEntryViewModel viewModel = MapToViewModel(model);
+
+            return View(viewModel);
         }
 
         // POST: ContactListEntries/Delete/5
@@ -150,23 +153,37 @@ namespace ContactListMvc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.ContactListEntry == null)
-            {
-                return Problem("Entity set 'DatabaseContext.ContactListEntry'  is null.");
-            }
-            var contactListEntry = await _context.ContactListEntry.FindAsync(id);
-            if (contactListEntry != null)
-            {
-                _context.ContactListEntry.Remove(contactListEntry);
-            }
+            await _service.DeleteEntryAsync(id);
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ContactListEntryExists(int id)
+        private static ContactListEntry MapToBusinessModel(ContactListEntryViewModel viewModel)
         {
-            return (_context.ContactListEntry?.Any(e => e.Id == id)).GetValueOrDefault();
+            return new ContactListEntry
+            {
+                Id = viewModel.Id,
+                ContactType = viewModel.ContactType,
+                Name = viewModel.Name,
+                DateOfBirth = viewModel.DateOfBirth,
+                Address = viewModel.Address,
+                PhoneNumber = viewModel.PhoneNumber,
+                Email = viewModel.Email
+            };
+        }
+
+        private static ContactListEntryViewModel MapToViewModel(ContactListEntry businessModel)
+        {
+            return new ContactListEntryViewModel
+            {
+                Id = businessModel.Id,
+                ContactType = businessModel.ContactType,
+                Name = businessModel.Name,
+                DateOfBirth = businessModel.DateOfBirth,
+                Address = businessModel.Address,
+                PhoneNumber = businessModel.PhoneNumber,
+                Email = businessModel.Email
+            };
         }
     }
 }
