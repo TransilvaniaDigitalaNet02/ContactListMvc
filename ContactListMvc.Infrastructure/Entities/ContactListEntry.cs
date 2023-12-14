@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace ContactListMvc.Infrastructure.Entities
 {
     [Table("ContactList")]
-    public class ContactListEntryEntity
+    internal sealed class ContactListEntryEntity
     {
         [Key]
         [Required]

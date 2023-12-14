@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ContactListMvc.Business.Services.Implementation
 {
-    internal class ContactListService : IContactListService
+    internal sealed class ContactListService : IContactListService
     {
         private readonly IContactListEntryStore _store;
 

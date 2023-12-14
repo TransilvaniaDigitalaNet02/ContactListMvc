@@ -1,6 +1,6 @@
 ﻿namespace ContactListMvc.Business.Models
 {
-    public class ValidationError
+    public sealed class ValidationError
     {
         public ValidationError(IReadOnlyList<string> properties, string errorMessage) 
         {

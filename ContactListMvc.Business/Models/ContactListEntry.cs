@@ -3,8 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ContactListMvc.Business.Models
 {
-    [Table("ContactList")]
-    public class ContactListEntry
+    public sealed class ContactListEntry
     {
         [Required]
         public int Id {  get; set; }

@@ -3,7 +3,7 @@ using ContactListMvc.Infrastructure.Entities;
 
 namespace ContactListMvc.Infrastructure.Data
 {
-    public class DatabaseContext : DbContext
+    internal class DatabaseContext : DbContext
     {
         public DatabaseContext(DbContextOptions<DatabaseContext> options)
             : base(options)

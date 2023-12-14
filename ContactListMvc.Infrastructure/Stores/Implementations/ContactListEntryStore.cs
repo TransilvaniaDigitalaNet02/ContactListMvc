@@ -7,7 +7,7 @@ using System.Net;
 
 namespace ContactListMvc.Infrastructure.Stores.Implementations
 {
-    internal class ContactListEntryStore : IContactListEntryStore
+    internal sealed class ContactListEntryStore : IContactListEntryStore
     {
         private readonly DatabaseContext _database;
 

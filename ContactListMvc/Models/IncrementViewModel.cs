@@ -1,6 +1,6 @@
 ﻿namespace ContactListMvc.Models
 {
-    public class IncrementViewModel
+    public sealed class IncrementViewModel
     {
         public int Value { get; set; }
     }

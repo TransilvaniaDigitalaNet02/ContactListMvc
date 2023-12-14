@@ -1,6 +1,6 @@
 ﻿namespace ContactListMvc.Infrastructure.Models
 {
-    public class ContactListEntryDTO
+    public sealed class ContactListEntryDTO
     {
         public int Id { get; set; }
 

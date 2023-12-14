@@ -2,7 +2,7 @@
 
 namespace ContactListMvc.Business.Exceptions
 {
-    public class DataAnnotationValidationException : BaseException
+    public sealed class DataAnnotationValidationException : BaseException
     {
         public DataAnnotationValidationException(IEnumerable<ValidationError> errors) 
             : base(string.Join(";", errors.Select(e => e.ErrorMessage)))

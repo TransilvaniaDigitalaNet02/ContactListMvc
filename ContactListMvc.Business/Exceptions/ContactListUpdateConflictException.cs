@@ -2,7 +2,7 @@
 
 namespace ContactListMvc.Business.Exceptions
 {
-    public class ContactListUpdateConflictException : BaseException
+    public sealed class ContactListUpdateConflictException : BaseException
     {
         public ContactListUpdateConflictException(
             bool entryDeletedInTheMeanwhile, Exception innerException)

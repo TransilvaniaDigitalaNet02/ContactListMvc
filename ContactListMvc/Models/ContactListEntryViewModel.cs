@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ContactListMvc.Models
 {
-    public class ContactListEntryViewModel
+    public sealed class ContactListEntryViewModel
     {
         [Required]
         public int Id {  get; set; }
